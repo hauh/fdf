@@ -6,13 +6,13 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 18:35:28 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/05 22:59:24 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/09 12:57:57 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	key_press(int key, t_mlx *m)
+void	key_press(int key, t_fdf *m)
 {
 	if (key == 53)
 		exit(0);
@@ -37,12 +37,12 @@ void	key_press(int key, t_mlx *m)
 	print(m);
 }
 
-/*void	key_release(int key, t_mlx *m)
+/*void	key_release(int key, t_fdf *m)
 {
 
 }*/
 
-void	mouse_press(int button, int x, int y, t_mlx *m)
+void	mouse_press(int button, int x, int y, t_fdf *m)
 {
 	m->mouse.x = x;
 	m->mouse.y = y;
@@ -50,7 +50,7 @@ void	mouse_press(int button, int x, int y, t_mlx *m)
 		m->mouse.m1_pressed = 1;
 }
 
-void	mouse_release(int button, int x, int y, t_mlx *m)
+void	mouse_release(int button, int x, int y, t_fdf *m)
 {
 	m->mouse.x = x;
 	m->mouse.y = y;
@@ -58,7 +58,7 @@ void	mouse_release(int button, int x, int y, t_mlx *m)
 		m->mouse.m1_pressed = 0;
 }
 
-void	mouse_move(int x, int y, t_mlx *m)
+void	mouse_move(int x, int y, t_fdf *m)
 {
 	if (m->mouse.m1_pressed == 1)
 	{
