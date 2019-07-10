@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 17:40:45 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/09 21:31:02 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/11 00:13:16 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,58 +61,63 @@ static void		coloring(t_dots *coord)
 {
 	int		max_z;
 	int		min_z;
+	t_dots	*head;
 
 	max_z = 1;
 	min_z = -1;
-	while (coord->right)
+	head = coord;
+	while (coord)
 	{
-		if (coord->z0 > max_z)
-			max_z = coord->z0;
+		if (coord->z0 + 1 > max_z)
+			max_z = coord->z0 + 1;
 		if (coord->z0 < min_z)
 			min_z = coord->z0;
 		coord = coord->right;
 	}
-	while (coord->left)
+	min_z = ~min_z - 1;
+	while (head)
 	{
-		if (coord->z0 > 0)
-			coord->color = get_color(GROUND_COLOR, TOP_COLOR, coord->z0, max_z);
+		if (head->z0 < 0)
+			head->color = get_color(GRND_CLR, BTM_CLR, abs(head->z0), min_z);
 		else
-			coord->color = get_color(BOTTOM_COLOR, GROUND_COLOR, abs(coord->z0), min_z);
-		coord = coord->left;
+			head->color = get_color(GRND_CLR, TOP_CLR, head->z0, max_z);
+		head = head->right;
 	}
 }
 
-t_dots			*read_map(int fd)
+t_dots			*read_map(int fd, int *scale)
 {
+	t_dots	*list;
 	char	*line;
-	char	*line0;
+	char	**split;
 	int		x;
 	int		y;
-	int		r;
-	t_dots	*list;
+	int		i;
 
 	list = NULL;
 	y = 0;
-	while ((r = get_next_line(fd, &line0)))
+	while ((i = get_next_line(fd, &line)))
 	{
-		if (r < 0)
+		if (i < 0 || !(split = ft_strsplit((const char *)line, ' ')))
 			exit(-1);
 		x = 0;
-		line = line0;
-		while (*line)
-		{
-			list = new_element(list, x, y, ft_atoi(line++));
-			while (*line && *line != ' ')
-				++line;
-			++x;
-		}
+		while (*split)
+			list = new_element(list, x++, y, ft_atoi(*split++));
+		i = x;
+		while (i--)
+			free(*--split);
 		++y;
-		free(line0);
+		free(split);
+		free(line);
 	}
-	while (list->left)
-		list = list->left;
-	centering(list, x / 2, y / 2);
-	down_linking(list);
-	coloring(list);
+	if (list)
+	{
+		while (list->left)
+			list = list->left;
+		centering(list, x / 2, y / 2);
+		down_linking(list);
+		coloring(list);
+		*scale = MIN(FDF_WIDTH / x, FDF_HEIGHT / y);
+	}
 	return (list);
 }

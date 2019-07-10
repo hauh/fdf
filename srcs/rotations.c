@@ -6,13 +6,13 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 18:31:06 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/05 22:59:10 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/10 22:44:22 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	rotate_x(t_dots *coord, double angle)
+void	rotate_x(t_dots *coord, double angle, int projection)
 {
 	double	y;
 	double	z;
@@ -29,9 +29,10 @@ void	rotate_x(t_dots *coord, double angle)
 		coord->z = -y * sinus + z * cosinus;
 		coord = coord->right;
 	}
+	(void)projection;
 }
 
-void	rotate_y(t_dots *coord, double angle)
+void	rotate_y(t_dots *coord, double angle, int projection)
 {
 	double	x;
 	double	z;
@@ -48,9 +49,10 @@ void	rotate_y(t_dots *coord, double angle)
 		coord->z = -x * sinus + z * cosinus;
 		coord = coord->right;
 	}
+	(void)projection;
 }
 
-void	rotate_z(t_dots *coord, double angle)
+void	rotate_z(t_dots *coord, double angle, int projection)
 {
 	double	x;
 	double	y;
@@ -67,6 +69,7 @@ void	rotate_z(t_dots *coord, double angle)
 		coord->y = x * sinus + y * cosinus;
 		coord = coord->right;
 	}
+	(void)projection;
 }
 
 void	shift(t_dots *coord, int key)
@@ -88,7 +91,7 @@ void	shift(t_dots *coord, int key)
 		}
 }
 
-void	restore(t_dots *coord)
+int		parallel(t_dots *coord)
 {
 	while (coord)
 	{
@@ -97,9 +100,10 @@ void	restore(t_dots *coord)
 		coord->z = (double)coord->z0;
 		coord = coord->right;
 	}
+	return (1);
 }
 
-void	isometry(t_dots *coord)
+int		isometry(t_dots *coord)
 {
 	double x;
 	double y;
@@ -110,10 +114,11 @@ void	isometry(t_dots *coord)
 	sinus = sin(0.523599);
 	while (coord)
 	{
-		x = coord->x;
-		y = coord->y;
+		x = coord->x0;
+		y = coord->y0;
 		coord->x = (x - y) * cosinus;
-		coord->y = (x + y) * sinus - coord->z;
+		coord->y = (x + y) * sinus - coord->z0;
 		coord = coord->right;
 	}
+	return (2);
 }

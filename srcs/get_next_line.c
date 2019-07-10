@@ -6,11 +6,11 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/15 15:36:49 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/03 17:13:59 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/10 18:28:24 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/get_next_line.h"
+#include "get_next_line.h"
 
 static int		find_newline(char *s)
 {
