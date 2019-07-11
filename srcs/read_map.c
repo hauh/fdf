@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 17:40:45 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/11 00:13:16 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/11 21:51:01 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,34 +57,6 @@ static void		down_linking(t_dots *coord)
 	}
 }
 
-static void		coloring(t_dots *coord)
-{
-	int		max_z;
-	int		min_z;
-	t_dots	*head;
-
-	max_z = 1;
-	min_z = -1;
-	head = coord;
-	while (coord)
-	{
-		if (coord->z0 + 1 > max_z)
-			max_z = coord->z0 + 1;
-		if (coord->z0 < min_z)
-			min_z = coord->z0;
-		coord = coord->right;
-	}
-	min_z = ~min_z - 1;
-	while (head)
-	{
-		if (head->z0 < 0)
-			head->color = get_color(GRND_CLR, BTM_CLR, abs(head->z0), min_z);
-		else
-			head->color = get_color(GRND_CLR, TOP_CLR, head->z0, max_z);
-		head = head->right;
-	}
-}
-
 t_dots			*read_map(int fd, int *scale)
 {
 	t_dots	*list;
@@ -116,7 +88,7 @@ t_dots			*read_map(int fd, int *scale)
 			list = list->left;
 		centering(list, x / 2, y / 2);
 		down_linking(list);
-		coloring(list);
+		coloring(list, CLR_00, CLR_01);
 		*scale = MIN(FDF_WIDTH / x, FDF_HEIGHT / y);
 	}
 	return (list);

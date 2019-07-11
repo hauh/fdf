@@ -6,7 +6,7 @@
 #    By: smorty <smorty@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/03 17:42:05 by smorty            #+#    #+#              #
-#    Updated: 2019/07/05 18:45:02 by smorty           ###   ########.fr        #
+#    Updated: 2019/07/11 21:53:25 by smorty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ LFT = $(LFTDIR)libft.a
 
 LFTDIR = $(SRCDIR)libft/
 
-SRCS = $(addprefix $(SRCDIR),main.c get_next_line.c read_map.c print.c controls.c rotations.c)
+SRCS = $(addprefix $(SRCDIR),main.c get_next_line.c read_map.c print.c controls.c colors.c rotations.c)
 
 OBJ = $(SRCS:%.c=$(OBJDIR)%.o)
 

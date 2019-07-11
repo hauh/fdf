@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 16:44:52 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/10 22:48:14 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/11 23:08:41 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <math.h>
 #include "get_next_line.h"
 #include <stdio.h> //remove
+#include <time.h>
 
 # define X 0
 # define Y 1
@@ -25,9 +26,26 @@
 #define FDF_WIDTH 1920
 #define FDF_HEIGHT 1200
 
-#define TOP_CLR 0x8b0000
-#define GRND_CLR 0x228b22
-#define BTM_CLR 0x483d8b
+#define CLR_00 0x228B22
+#define CLR_01 0x8B0000
+#define CLR_10 0x314fe0
+#define CLR_11 0x9a017b
+#define CLR_20 0x25f871
+#define CLR_21 0xff124a
+#define CLR_30 0x48748d
+#define CLR_31 0xfac370
+#define CLR_40 0xdff94d
+#define CLR_41 0xe35406
+#define CLR_50 0xf53a11
+#define CLR_51 0xedd0c5
+#define CLR_60 0x962459
+#define CLR_61 0x2beaf3
+#define CLR_70 0x07e8f8
+#define CLR_71 0x37021b
+#define CLR_80 0xb2e1c7
+#define CLR_81 0x4b197a
+#define CLR_90 0x388988
+#define CLR_91 0xd89201
 
 #define RED_CH(color) ((color >> 16) & 0xFF)
 #define GREEN_CH(color) ((color >> 8) & 0xFF)
@@ -54,6 +72,7 @@ typedef struct	s_mouse
 	int				y;
 	int				m1_pressed;
 	int				m2_pressed;
+	int				m3_pressed;
 }				t_mouse;
 
 typedef struct	s_image
@@ -72,19 +91,22 @@ typedef struct	s_fdf
 	t_dots			*coord;
 	t_mouse			mouse;
 	t_image			image;
+	double			vector[3][3];
+	double			angle[3];
+	int				shift[2];
 	int				width;
 	int				height;
+	int				colored;
+	int 			tab_pressed;
 	int				def_scale;
 	int				scale;
-	int				projection;
 }				t_fdf;
 
 t_dots			*read_map(int fd, int *scale);
+void			coloring(t_dots *coord, int color0, int color1);
 int				get_color(int color0, int color1, int n, int len);
 void			print(t_fdf *m);
-void			rotate_x(t_dots *coord, double angle, int projection);
-void			rotate_y(t_dots *coord, double angle, int projection);
-void			rotate_z(t_dots *coord, double angle, int projection);
+void			change_color(t_fdf *m, int key);
 void			shift(t_dots *coord, int key);
 void			key_press(int keycode, t_fdf *m);
 void			key_release(int keycode, t_fdf *m);
@@ -94,5 +116,8 @@ void			mouse_release(int button, int x, int y, t_fdf *m);
 int				parallel(t_dots *coord);
 int				isometry(t_dots *coord);
 void			mirror(t_dots *coord);
+void			rotate(t_fdf *m, t_dots *coord, double angle, int xyz);
+void			init_matrix(t_fdf *m);
+void			rotation_matrix(t_fdf *m, t_dots *coord);
 
 #endif

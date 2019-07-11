@@ -6,90 +6,11 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 18:31:06 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/10 22:44:22 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/11 22:08:24 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-
-void	rotate_x(t_dots *coord, double angle, int projection)
-{
-	double	y;
-	double	z;
-	double	cosinus;
-	double	sinus;
-
-	cosinus = cos(angle);
-	sinus = sin(angle);
-	while (coord)
-	{
-		y = coord->y;
-		z = coord->z;
-		coord->y = y * cosinus + z * sinus;
-		coord->z = -y * sinus + z * cosinus;
-		coord = coord->right;
-	}
-	(void)projection;
-}
-
-void	rotate_y(t_dots *coord, double angle, int projection)
-{
-	double	x;
-	double	z;
-	double	cosinus;
-	double	sinus;
-
-	cosinus = cos(angle);
-	sinus = sin(angle);
-	while (coord)
-	{
-		x = coord->x;
-		z = coord->z;
-		coord->x = x * cosinus + z * sinus;
-		coord->z = -x * sinus + z * cosinus;
-		coord = coord->right;
-	}
-	(void)projection;
-}
-
-void	rotate_z(t_dots *coord, double angle, int projection)
-{
-	double	x;
-	double	y;
-	double	cosinus;
-	double	sinus;
-
-	cosinus = cos(angle);
-	sinus = sin(angle);
-	while (coord)
-	{
-		x = coord->x;
-		y = coord->y;
-		coord->x = x * cosinus - y * sinus;
-		coord->y = x * sinus + y * cosinus;
-		coord = coord->right;
-	}
-	(void)projection;
-}
-
-void	shift(t_dots *coord, int key)
-{
-	double	shift;
-
-	shift = (key == 124 || key == 125 ? 1 : -1);
-	if (key == 123 || key == 124)
-		while (coord)
-		{
-			coord->x += shift;
-			coord = coord->right;
-		}
-	else
-		while (coord)
-		{
-			coord->y += shift;
-			coord = coord->right;
-		}
-}
 
 int		parallel(t_dots *coord)
 {
@@ -116,9 +37,63 @@ int		isometry(t_dots *coord)
 	{
 		x = coord->x0;
 		y = coord->y0;
-		coord->x = (x - y) * cosinus;
-		coord->y = (x + y) * sinus - coord->z0;
+		coord->x = (x + y) * 1.100;
+		coord->y = (x - y) * -0.880 - coord->z0;
 		coord = coord->right;
 	}
 	return (2);
 }
+
+void	rotation_matrix(t_fdf *m, t_dots *coord)
+{
+	m->vector[X][X] = cos(m->angle[Y]) * cos(m->angle[Z]);
+	m->vector[X][Y] = -sin(m->angle[X]) * -sin(m->angle[Y]) * cos(m->angle[Z])
+					+ (cos(m->angle[X]) * sin(m->angle[Z]));
+	m->vector[X][Z] = -sin(m->angle[Y]) * cos(m->angle[X]) * cos(m->angle[Z])
+					+ (sin(m->angle[Z]) * sin(m->angle[X]));
+	m->vector[Y][X] = cos(m->angle[Y]) * -sin(m->angle[Z]);
+	m->vector[Y][Y] = cos(m->angle[X]) * cos(m->angle[Z]) + (-sin(m->angle[X])
+					* -sin(m->angle[Y]) * -sin(m->angle[Z]));
+	m->vector[Y][Z] = sin(m->angle[X]) * cos(m->angle[Z]) + (-sin(m->angle[Z])
+					* -sin(m->angle[Y]) * cos(m->angle[X]));
+	m->vector[Z][X] = sin(m->angle[Y]);
+	m->vector[Z][Y] = -sin(m->angle[X]) * cos(m->angle[Y]);
+	m->vector[Z][Z] = cos(m->angle[X]) * cos(m->angle[Y]);
+	while (coord)
+	{
+		coord->x = coord->x0 * m->vector[X][X] + coord->y0 * m->vector[Y][X]
+					+ coord->z0 * m->vector[Z][X];
+		coord->y = coord->x0 * m->vector[X][Y] + coord->y0 * m->vector[Y][Y]
+					+ coord->z0 * m->vector[Z][Y];
+		coord->z = coord->x0 * m->vector[X][Z] + coord->y0 * m->vector[Y][Z]
+					+ coord->z0 * m->vector[Z][Z];
+		coord = coord->right;
+	}
+}
+
+/*
+void	view_from_above(t_m *m)
+{
+	m->vector[X][X] = 1;
+	m->vector[X][Y] = 0;
+	m->vector[X][Z] = 0;
+	m->vector[Y][X] = 0;
+	m->vector[Y][Y] = 1;
+	m->vector[Y][Z] = 0;
+	m->vector[Z][X] = 0;
+	m->vector[Z][Y] = 0;
+	m->vector[Z][Z] = 1;
+}
+
+void	to_mirror_image(t_m *m)
+{
+	m->vector[X][X] = -1;
+	m->vector[X][Y] = 0;
+	m->vector[X][Z] = 0;
+	m->vector[Y][X] = 0;
+	m->vector[Y][Y] = -1;
+	m->vector[Y][Z] = 0;
+	m->vector[Z][X] = 0;
+	m->vector[Z][Y] = 0;
+	m->vector[Z][Z] = 1;
+}*/
