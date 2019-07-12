@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 17:40:45 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/11 21:51:01 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/12 23:20:55 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static void		down_linking(t_dots *coord)
 	}
 }
 
-t_dots			*read_map(int fd, int *scale)
+t_dots			*read_map(int fd, double *scale)
 {
 	t_dots	*list;
 	char	*line;
@@ -88,8 +88,7 @@ t_dots			*read_map(int fd, int *scale)
 			list = list->left;
 		centering(list, x / 2, y / 2);
 		down_linking(list);
-		coloring(list, CLR_00, CLR_01);
-		*scale = MIN(FDF_WIDTH / x, FDF_HEIGHT / y);
+		*scale = sqrt(FDF_WIDTH / x + FDF_HEIGHT / y);
 	}
 	return (list);
 }

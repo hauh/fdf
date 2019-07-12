@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 16:44:18 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/11 23:11:32 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/12 23:22:09 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 static void		cleanup(t_fdf *m)
 {
 	while (m->coord->right)
-		free(m->coord->right);
+	{
+		m->coord = m->coord->right;
+		free(m->coord->left);
+	}
 	free(m->coord);
 	free(m->image.img_p);
 	free(m->image.map);
@@ -27,15 +30,18 @@ static void		cleanup(t_fdf *m)
 void			init_matrix(t_fdf *m)
 {
 	coloring(m->coord, CLR_00, CLR_01);
-	m->vector[X][X] = 1.0;
-	m->vector[X][Y] = 0.0;
-	m->vector[X][Z] = 0.0;
-	m->vector[Y][X] = 0.0;
-	m->vector[Y][Y] = 1.0;
-	m->vector[Y][Z] = 0.0;
-	m->vector[Z][X] = 0.0;
-	m->vector[Z][Y] = 0.0;
-	m->vector[Z][Z] = 1.0;
+	m->matrix[X][X] = 1.0;
+	m->matrix[X][Y] = 0.0;
+	m->matrix[X][Z] = 0.0;
+	m->matrix[Y][X] = 0.0;
+	m->matrix[Y][Y] = 1.0;
+	m->matrix[Y][Z] = 0.0;
+	m->matrix[Z][X] = 0.0;
+	m->matrix[Z][Y] = 0.0;
+	m->matrix[Z][Z] = 1.0;
+	m->matrix[S][X] = m->width / 2;
+	m->matrix[S][Y] = m->height / 2;
+	m->matrix[S][Z] = 0.0;
 	m->angle[X] = 0.0;
 	m->angle[Y] = 0.0;
 	m->angle[Z] = 0.0;
@@ -49,11 +55,8 @@ static t_fdf	*initialization(int fd)
 		exit(-1);
 	m->width = FDF_WIDTH;
 	m->height = FDF_HEIGHT;
-	m->coord = read_map(fd, &m->def_scale);
+	m->coord = read_map(fd, &m->matrix[S][S]);
 	init_matrix(m);
-	m->scale = m->def_scale;
-	m->shift[X] = 0;
-	m->shift[Y] = 0;
 	m->mouse.m1_pressed = 0;
 	m->mouse.m2_pressed = 0;
 	m->mouse.m3_pressed = 0;

@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 16:44:52 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/11 23:08:41 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/12 23:27:57 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # define X 0
 # define Y 1
 # define Z 2
+# define S 3
 
 #define FDF_WIDTH 1920
 #define FDF_HEIGHT 1200
@@ -91,18 +92,15 @@ typedef struct	s_fdf
 	t_dots			*coord;
 	t_mouse			mouse;
 	t_image			image;
-	double			vector[3][3];
+	double			matrix[4][4];
 	double			angle[3];
-	int				shift[2];
 	int				width;
 	int				height;
 	int				colored;
 	int 			tab_pressed;
-	int				def_scale;
-	int				scale;
 }				t_fdf;
 
-t_dots			*read_map(int fd, int *scale);
+t_dots			*read_map(int fd, double *scale);
 void			coloring(t_dots *coord, int color0, int color1);
 int				get_color(int color0, int color1, int n, int len);
 void			print(t_fdf *m);
@@ -116,8 +114,8 @@ void			mouse_release(int button, int x, int y, t_fdf *m);
 int				parallel(t_dots *coord);
 int				isometry(t_dots *coord);
 void			mirror(t_dots *coord);
-void			rotate(t_fdf *m, t_dots *coord, double angle, int xyz);
 void			init_matrix(t_fdf *m);
-void			rotation_matrix(t_fdf *m, t_dots *coord);
+void			rotate(t_fdf *m, int key, int distance);
+void			apply_matrix(t_dots *coord, double matrix[4][4]);
 
 #endif
