@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/11 21:50:16 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/12 18:10:58 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/15 20:53:13 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,10 @@ void	change_color(t_fdf *m, int key)
 		coloring(m->coord, CLR_80, CLR_81);
 	else if (key == 28)
 		coloring(m->coord, CLR_90, CLR_91);
-	else if (key == 50)
+	else if (key == 29)
 		coloring(m->coord, ((RED_CH(rand()) << 16) | (GREEN_CH(rand()) << 8)
 							| (BLUE_CH(rand()))), ((RED_CH(rand()) << 16)
 							| (GREEN_CH(rand()) << 8 | BLUE_CH(rand()))));
-	else if (key == 29)
+	else if (key == 27)
 		m->colored = ~m->colored;
 }

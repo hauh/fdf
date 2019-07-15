@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 16:44:18 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/12 23:22:09 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/15 22:30:19 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,19 @@ void			init_matrix(t_fdf *m)
 	m->matrix[X][X] = 1.0;
 	m->matrix[X][Y] = 0.0;
 	m->matrix[X][Z] = 0.0;
+	m->matrix[X][S] = m->width / 2;
 	m->matrix[Y][X] = 0.0;
 	m->matrix[Y][Y] = 1.0;
 	m->matrix[Y][Z] = 0.0;
+	m->matrix[Y][S] = m->height / 2;
 	m->matrix[Z][X] = 0.0;
 	m->matrix[Z][Y] = 0.0;
 	m->matrix[Z][Z] = 1.0;
-	m->matrix[S][X] = m->width / 2;
-	m->matrix[S][Y] = m->height / 2;
-	m->matrix[S][Z] = 0.0;
+	m->matrix[Z][S] = 0.0;
+	m->matrix[S][X] = 1.0;
+	m->matrix[S][Y] = 1.0;
+	m->matrix[S][Z] = 1.0;
+	m->matrix[S][S] = m->def_scale;
 	m->angle[X] = 0.0;
 	m->angle[Y] = 0.0;
 	m->angle[Z] = 0.0;
@@ -55,20 +59,24 @@ static t_fdf	*initialization(int fd)
 		exit(-1);
 	m->width = FDF_WIDTH;
 	m->height = FDF_HEIGHT;
-	m->coord = read_map(fd, &m->matrix[S][S]);
+	m->coord = read_map(fd, &m->def_scale);
 	init_matrix(m);
 	m->mouse.m1_pressed = 0;
 	m->mouse.m2_pressed = 0;
 	m->mouse.m3_pressed = 0;
 	m->tab_pressed = 0;
+	m->colored = 0;
 	m->mouse.x = 0;
 	m->mouse.y = 0;
-	m->colored = 0;
-	m->mlx_p = mlx_init();
+	if (!(m->mlx_p = mlx_init()))
+		exit(-1);
 	m->win_p = mlx_new_window(m->mlx_p, m->width, m->height, "smorty's FdF");
 	m->image.img_p = mlx_new_image(m->mlx_p, m->width, m->height);
-	m->image.map = mlx_get_data_addr(m->image.img_p, &m->image.bpp,
-									&m->image.size_line, &m->image.endian);
+	if (!(m->win_p && m->image.img_p))
+		exit(-1);
+	if (!(m->image.map = mlx_get_data_addr(m->image.img_p, &m->image.bpp,
+									&m->image.size_line, &m->image.endian)))
+		exit(-1);
 	return (m);
 }
 
@@ -88,4 +96,4 @@ int				main(int argc, char **argv)
 	mlx_loop(m->mlx_p);
 	cleanup(m);
 	return (0);
-} 
+}

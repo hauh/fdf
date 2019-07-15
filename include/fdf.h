@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 16:44:52 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/12 23:27:57 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/15 23:40:37 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef struct	s_dots
 {
 	double			x;
 	double			y;
-	double			z;
 	int				x0;
 	int				y0;
 	int				z0;
@@ -94,6 +93,7 @@ typedef struct	s_fdf
 	t_image			image;
 	double			matrix[4][4];
 	double			angle[3];
+	double			def_scale;
 	int				width;
 	int				height;
 	int				colored;
@@ -111,7 +111,6 @@ void			key_release(int keycode, t_fdf *m);
 void			mouse_press(int button, int x, int y, t_fdf *m);
 void			mouse_move(int x, int y, t_fdf *m);
 void			mouse_release(int button, int x, int y, t_fdf *m);
-int				parallel(t_dots *coord);
 int				isometry(t_dots *coord);
 void			mirror(t_dots *coord);
 void			init_matrix(t_fdf *m);
