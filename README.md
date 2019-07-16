@@ -17,8 +17,8 @@ FdF then outputs fully rotatable and scalable colored 3D representation of the m
 
 From something like this:
 
-![alt text](https://github.com/hauh/fdf/blob/screenshots/fdf_map.png)]
+![alt text](https://github.com/hauh/fdf/blob/screenshots/fdf_map.png)
 
 To something like this:
 
-![alt text](https://github.com/hauh/fdf/blob/screenshots/fdf.png)]
+![alt text](https://github.com/hauh/fdf/blob/screenshots/fdf.png)
