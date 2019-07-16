@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 18:41:21 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/16 21:28:18 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/16 22:47:13 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ static void	print_controls(t_fdf *m)
 		"Default position & colors: backspace");
 	mlx_string_put(m->mlx_p, m->win_p, 10, x += 18, 0xffffff,
 		"Hide controls: tab");
+	mlx_string_put(m->mlx_p, m->win_p, 10, x += 18, 0xffffff, "Exit: esc");
 }
 
 void		print(t_fdf *m)
