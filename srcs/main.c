@@ -6,26 +6,11 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 16:44:18 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/15 22:30:19 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/16 21:41:18 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-
-static void		cleanup(t_fdf *m)
-{
-	while (m->coord->right)
-	{
-		m->coord = m->coord->right;
-		free(m->coord->left);
-	}
-	free(m->coord);
-	free(m->image.img_p);
-	free(m->image.map);
-	free(m->mlx_p);
-	free(m->win_p);
-	free(m);
-}
 
 void			init_matrix(t_fdf *m)
 {
@@ -46,9 +31,10 @@ void			init_matrix(t_fdf *m)
 	m->matrix[S][Y] = 1.0;
 	m->matrix[S][Z] = 1.0;
 	m->matrix[S][S] = m->def_scale;
-	m->angle[X] = 0.0;
+	m->angle[X] = -1.0;
 	m->angle[Y] = 0.0;
-	m->angle[Z] = 0.0;
+	m->angle[Z] = M_PI_4;
+	rotate(m, 0, 0);
 }
 
 static t_fdf	*initialization(int fd)
@@ -85,15 +71,20 @@ int				main(int argc, char **argv)
 	int		fd;
 	t_fdf	*m;
 
-	if (argc != 2 || (fd = open(argv[1], O_RDONLY)) < 0)
-		return (0);
-	m = initialization(fd);
-	print(m);
-	mlx_hook(m->win_p, 2, 0, (int (*)())key_press, m);
-	mlx_hook(m->win_p, 4, 0, (int (*)())mouse_press, m);
-	mlx_hook(m->win_p, 6, 0, (int (*)())mouse_move, m);
-	mlx_hook(m->win_p, 5, 0, (int (*)())mouse_release, m);
-	mlx_loop(m->mlx_p);
-	cleanup(m);
+	if (argc != 2)
+		write(1, "usage: fdf map_file\n", 20);
+	else if ((fd = open(argv[1], O_RDONLY)) < 0)
+		write(1, "file error\n", 11);
+	else
+	{
+		m = initialization(fd);
+		close(fd);
+		print(m);
+		mlx_hook(m->win_p, 2, 0, (int (*)())key_press, m);
+		mlx_hook(m->win_p, 4, 0, (int (*)())mouse_press, m);
+		mlx_hook(m->win_p, 6, 0, (int (*)())mouse_move, m);
+		mlx_hook(m->win_p, 5, 0, (int (*)())mouse_release, m);
+		mlx_loop(m->mlx_p);
+	}
 	return (0);
 }

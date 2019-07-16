@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 17:40:45 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/15 22:28:25 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/16 21:20:36 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,16 @@ static t_dots	*new_element(t_dots *list, int x, int y, int z)
 	return (new);
 }
 
+static void		centering(t_dots *coord, int x_shift, int y_shift)
+{
+	while (coord)
+	{
+		coord->x0 -= x_shift;
+		coord->y0 -= y_shift;
+		coord = coord->right;
+	}
+}
+
 static void		down_linking(t_dots *coord)
 {
 	t_dots	*tmp;
@@ -42,42 +52,47 @@ static void		down_linking(t_dots *coord)
 	}
 }
 
-t_dots			*read_map(int fd, double *scale)
+static t_dots	*get_coords(int fd, int *x, int *y)
 {
-	t_dots	*list;
-	char	*line;
+	t_dots	*coord;
 	char	**split;
-	int		coord[2];
+	char	*line;
 	int		i;
 
-	list = NULL;
-	coord[Y] = 0;
+	coord = NULL;
 	while ((i = get_next_line(fd, &line)))
 	{
 		if (i < 0 || !(split = ft_strsplit((const char *)line, ' ')))
 			exit(-1);
-		coord[X] = 0;
+		*x = 0;
 		while (*split)
-			list = new_element(list, coord[X]++, coord[Y], ft_atoi(*split++));
-		i = coord[X];
+			coord = new_element(coord, (*x)++, *y, ft_atoi(*split++));
+		i = *x;
 		while (i--)
 			free(*--split);
-		++coord[Y];
+		++(*y);
 		free(split);
 		free(line);
 	}
-	if (list)
+	if (coord)
+		while (coord->left)
+			coord = coord->left;
+	return (coord);
+}
+
+t_dots			*read_map(int fd, double *scale)
+{
+	t_dots	*coord;
+	int		fig_width;
+	int		fig_height;
+
+	fig_width = 0;
+	fig_height = 0;
+	if ((coord = get_coords(fd, &fig_width, &fig_height)))
 	{
-		list->x0 -= coord[X] / 2;
-		list->y0 -= coord[Y] / 2;
-		while (list->left)
-		{
-			list = list->left;
-			list->x0 -= coord[X] / 2;
-			list->y0 -= coord[Y] / 2;
-		}
-		down_linking(list);
-		*scale = cbrt((FDF_HEIGHT * FDF_WIDTH) / (coord[X] * coord[Y]));
+		centering(coord, fig_width / 2, fig_height / 2);
+		down_linking(coord);
+		*scale = MAX(FDF_HEIGHT / fig_height, FDF_WIDTH / fig_width) / 2.3;
 	}
-	return (list);
+	return (coord);
 }

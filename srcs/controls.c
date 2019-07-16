@@ -6,34 +6,34 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 18:35:28 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/15 23:40:24 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/16 21:45:43 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	apply_matrix(t_dots *coord, double matrix[4][4])
+static void	cleanup(t_fdf *m)
 {
-	while (coord)
+	while (m->coord->right)
 	{
-		coord->x = coord->x0 * matrix[X][X] * matrix[S][X]
-				+ coord->y0 * matrix[X][Y] * matrix[S][Y]
-				+ coord->z0 * matrix[X][Z] * matrix[S][Z];
-		coord->x *= matrix[S][S];
-		coord->x += matrix[X][S];
-		coord->y = coord->x0 * matrix[Y][X] * matrix[S][X]
-				+ coord->y0 * matrix[Y][Y] * matrix[S][Y]
-				+ coord->z0 * matrix[Y][Z] * matrix[S][Z];
-		coord->y *= matrix[S][S];
-		coord->y += matrix[Y][S];
-		coord = coord->right;
+		m->coord = m->coord->right;
+		free(m->coord->left);
 	}
+	free(m->coord);
+	free(m->image.img_p);
+	free(m->image.map);
+	free(m->mlx_p);
+	free(m->win_p);
+	free(m);
 }
 
-void	key_press(int key, t_fdf *m)
+void		key_press(int key, t_fdf *m)
 {
 	if (key == 53)
+	{
+		cleanup(m);
 		exit(0);
+	}
 	else if (key == 48)
 		m->tab_pressed = ~m->tab_pressed;
 	else if ((key >= 0 && key <= 2) || (key >= 12 && key <= 14) || key == 34)
@@ -56,7 +56,7 @@ void	key_press(int key, t_fdf *m)
 	print(m);
 }
 
-void	mouse_press(int button, int x, int y, t_fdf *m)
+void		mouse_press(int button, int x, int y, t_fdf *m)
 {
 	m->mouse.x = x;
 	m->mouse.y = y;
@@ -73,7 +73,7 @@ void	mouse_press(int button, int x, int y, t_fdf *m)
 	print(m);
 }
 
-void	mouse_release(int button, int x, int y, t_fdf *m)
+void		mouse_release(int button, int x, int y, t_fdf *m)
 {
 	m->mouse.x = x;
 	m->mouse.y = y;
@@ -85,7 +85,7 @@ void	mouse_release(int button, int x, int y, t_fdf *m)
 		m->mouse.m3_pressed = 0;
 }
 
-void	mouse_move(int x, int y, t_fdf *m)
+void		mouse_move(int x, int y, t_fdf *m)
 {
 	if (m->mouse.m1_pressed == 1)
 	{

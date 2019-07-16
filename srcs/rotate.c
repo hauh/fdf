@@ -6,7 +6,7 @@
 /*   By: smorty <smorty@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/12 18:06:02 by smorty            #+#    #+#             */
-/*   Updated: 2019/07/15 22:29:58 by smorty           ###   ########.fr       */
+/*   Updated: 2019/07/16 21:43:30 by smorty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,12 @@ static void	rotation_matrix(t_fdf *m)
 void		rotate(t_fdf *m, int key, int distance)
 {
 	if (key == 1 || key == 13)
-		m->angle[X] += M_PI_4 / 8 * (key == 13 ? 1 : -1);
+		m->angle[X] += M_PI_4 / 8 * (key == 13 ? -1 : 1);
 	else if (key == 12 || key == 14)
 		m->angle[Y] += M_PI_4 / 8 * (key - 13);
 	else if (key == 0 || key == 2)
 		m->angle[Z] += M_PI_4 / 8 * (key - 1);
 	else if (key < 0)
 		m->angle[key + 3] += M_PI_4 / 64 * distance;
-	else if (key == 34)
-	{
-		m->angle[X] = -1.0;
-		m->angle[Y] = 0.0;
-		m->angle[Z] = M_PI_4;
-	}
 	rotation_matrix(m);
 }
